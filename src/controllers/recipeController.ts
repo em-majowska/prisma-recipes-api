@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import * as recipeService from "../services/recipeService";
+import { TDifficulty } from "../types";
 
 // GET	/api/recipes	Récupérer toutes les recettes (avec recipe et tags)
-export const getAll = async (_req: Request, res: Response) => {
-  const recipes = await recipeService.getAllRecipes();
+export const getAll = async (req: Request, res: Response) => {
+  const difficulty = req.query.difficulty as TDifficulty | undefined;
+  const tag = req.query.tag as string | undefined;
+
+  const recipes = await recipeService.getAllRecipes({ difficulty, tag });
   res.json(recipes);
 };
 
