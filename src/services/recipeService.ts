@@ -1,4 +1,5 @@
 import prisma from "../config/database";
+import { Difficulty } from "../generated/enums";
 import { TDifficulty } from "../types";
 
 // GET	/api/recipes	Récupérer toutes les recettes (avec chef et tags)
@@ -33,9 +34,13 @@ export const createRecipe = async (data: {
   chefId: number;
   tagIds?: number[];
 }) => {
-  const { tagIds, ...recipeData } = data;
+  const { tagIds, difficulty, ...recipeData } = data;
+  const difficultyUpperCase = Difficulty[
+    difficulty.toUpperCase() as keyof typeof Difficulty
+  ] as TDifficulty;
   return prisma.recipe.create({
     data: {
+      difficulty: difficultyUpperCase,
       ...recipeData,
       ...(tagIds && { tags: { connect: tagIds.map((id) => ({ id })) } }),
     },

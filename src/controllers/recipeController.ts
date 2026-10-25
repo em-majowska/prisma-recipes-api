@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
 import * as recipeService from "../services/recipeService";
 import { TDifficulty } from "../types";
+import { Difficulty } from "../generated/enums";
 
 // GET	/api/recipes	Récupérer toutes les recettes (avec recipe et tags)
 export const getAll = async (req: Request, res: Response) => {
-  const difficulty = req.query.difficulty as TDifficulty | undefined;
+  const rawDifficulty = req.query.difficulty as string | undefined;
+  const difficulty = rawDifficulty
+    ? (Difficulty[rawDifficulty.toUpperCase() as keyof typeof Difficulty] as
+        | TDifficulty
+        | undefined)
+    : undefined;
   const tag = req.query.tag as string | undefined;
 
   const recipes = await recipeService.getAllRecipes({ difficulty, tag });
